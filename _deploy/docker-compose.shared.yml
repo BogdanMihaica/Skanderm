@@ -1,0 +1,89 @@
+services:
+  mysql:
+    image: mysql:8.3.0
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "9999:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${APP_DB_PASS}
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1 # Set to a non-empty value
+      MYSQL_DATABASE: app
+    volumes:
+      - ./mysql/huge.cnf:/etc/mysql/mysql.conf.d/custom.cnf
+      - mysql_data:/var/lib/mysql
+    networks:
+      - project
+
+  php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/
+    volumes:
+      - ../backend:/var/www
+    environment:
+      - XDEBUG_MODE=develop,debug,profile
+    extra_hosts:
+      # add this so we can reach the host's localhost at "host.docker.internal"
+      - "host.docker.internal:host-gateway"
+    networks:
+      - project
+    depends_on:
+      - mysql
+
+  cron:
+    extends: php
+    build:
+      args:
+        - CONTAINER_ROLE=cron
+    command: cron -f
+
+  queue:
+    extends: php
+    command: supervisord -c /etc/supervisor/supervisord.conf
+    volumes:
+      - ./php/supervisord.conf:/etc/supervisor/supervisord.conf
+
+  node_backend:
+    build:
+      context: ./node
+      dockerfile: Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    tty: true
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ../backend:/var/www
+    networks:
+      - project
+
+  node_frontend:
+    build:
+      context: ./node
+      dockerfile: Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    tty: true
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ../admin:/var/www
+    networks:
+      - project
+
+networks:
+  project:
+  workstation:
+    external: true
+    name: workstation_default
+
+volumes:
+  mysql_data:

@@ -1,0 +1,50 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name ${APP_DOMAIN};
+    root /var/www/backend/public;
+
+    index index.php index.html;
+    charset utf-8;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        # fastcgi_pass must be "service:port" or "container name:port" from the docker compose yml file
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+
+        # you can use this to test if you reach this point - it will redirect to google with your variable as search query
+        #rewrite ^ http://www.google.com/?q=$realpath_root last; break;
+
+        # The files must match the path in the fastcgi_pass path inside the php-fpm container (which is /var/www/public)
+        # If we use $realpath_root this will be the "root" directive "/var/www/backend/public" in this vhost!
+        #fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME /var/www/public$fastcgi_script_name;
+
+        # If you are using symlinks to link the document root to the current version of your application, you should pass
+        # the real application path instead of the path to the symlink to PHP FPM.
+        # Otherwise, PHP's OPcache may not properly detect changes to your PHP files
+        # - see https://github.com/zendtech/ZendOptimizerPlus/issues/126#issuecomment-24020445 for more information
+        #fastcgi_param DOCUMENT_ROOT $realpath_root;
+
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+}
