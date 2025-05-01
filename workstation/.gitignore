@@ -1,0 +1,10 @@
+/ssl-certs/*
+!/ssl-certs/local.test
+
+/traefik/config/*
+!/traefik/config/dynamic.yml
+!/traefik/config/traefik.yml
+!/traefik/config/z_test-project.yml
+!/traefik/config/z_product-project.yml
+
+.env

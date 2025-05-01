@@ -75,7 +75,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www
     volumes:
-      - ../admin:/var/www
+      - ../frontend:/var/www
     networks:
       - project
 

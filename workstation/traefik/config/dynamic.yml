@@ -1,0 +1,47 @@
+http:
+  middlewares:
+    redirect-https:
+      redirectscheme:
+        scheme: https
+        permanent: true
+
+  routers:
+    portainer-http:
+      rule: "Host(`portainer.{{env "APP_DOMAIN"}}`)"
+      entrypoints:
+        - web
+      service: portainer-service
+      middlewares: redirect-https@file
+
+    portainer-https:
+      rule: "Host(`portainer.{{env "APP_DOMAIN"}}`)"
+      entrypoints:
+        - websecure
+      service: portainer-service
+      tls: true
+
+    traefik-http:
+      rule: "Host(`traefik.{{env "APP_DOMAIN"}}`)"
+      entrypoints:
+        - web
+      service: api@internal
+      middlewares: redirect-https@file
+
+    traefik-https:
+      rule: "Host(`traefik.{{env "APP_DOMAIN"}}`)"
+      entrypoints:
+        - websecure
+      service: api@internal
+      tls: true
+
+  services:
+    portainer-service:
+      loadBalancer:
+        servers:
+          - url: http://portainer:9000
+
+tls:
+  certificates:
+    # *.local.test certificate for local development
+    - certFile: /ssl-certs/local.test/local.test.crt
+      keyFile: /ssl-certs/local.test/local.test.key

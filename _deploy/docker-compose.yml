@@ -8,9 +8,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./nginx/templates/backend.conf.template:/etc/nginx/templates/default.conf.template
-      - ./nginx/templates/admin-local.conf.template:/etc/nginx/templates/admin.conf.template
+      - ./nginx/templates/frontend-local.conf.template:/etc/nginx/templates/frontend.conf.template
       - ../backend:/var/www/backend
-      - ../admin:/var/www/admin
+      - ../frontend:/var/www/frontend
     environment:
       APP_DOMAIN: ${APP_DOMAIN}
     networks:

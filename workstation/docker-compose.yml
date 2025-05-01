@@ -1,0 +1,28 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    tty: true
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+  traefik:
+    image: traefik:v3.1
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+      TRAEFIK_PASSWORD: ${TRAEFIK_PASSWORD}
+    extra_hosts:
+      # add this so we can reach the host's localhost at "host.docker.internal" inside traefik
+      # you can use http://host.docker.internal:[port] inside a service loadBalancer url
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/config:/etc/traefik
+      - ./ssl-certs:/ssl-certs
+
+volumes:
+  portainer_data:
