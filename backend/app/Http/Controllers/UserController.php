@@ -21,7 +21,7 @@ class UserController extends Controller
         $users = QueryBuilder::for(User::class)
             ->with('plan')
             ->allowedSorts(['created_at'])
-            ->allowedFilters(['email', 'name', 'plan.name'])
+            ->allowedFilters(['email', 'name', 'plan.name', 'is_blocked', 'is_admin'])
             ->paginate();
         
         return Jsonresource::collection($users);
@@ -128,8 +128,9 @@ class UserController extends Controller
         $loggedIn = Auth::attempt($validated);
 
         Validator::make(
-            ['email' => $loggedIn],
-            ['email' => 'accepted']
+            ['credentials' => $loggedIn],
+            ['credentials' => 'accepted'],
+            ['credentials.accepted' => 'Credentials do not match']
         )->validate();
 
         $token = $request->user()->createToken('API TOKEN')->plainTextToken;

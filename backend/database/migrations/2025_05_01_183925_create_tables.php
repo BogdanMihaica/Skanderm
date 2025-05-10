@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->boolean('is_admin')->default(0);
+            $table->boolean('is_blocked')->default(0);
             $table->unsignedBigInteger('plan_id')->nullable();
         });
 
@@ -50,6 +51,16 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('image_filename')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+
+            $table->string('transaction_id')->nullable();
+            $table->double('amount')->default(0);
+            $table->string('plan')->default('');
             $table->timestamps();
         });
     }

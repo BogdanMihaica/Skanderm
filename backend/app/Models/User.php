@@ -49,18 +49,19 @@ class User extends Authenticatable
         ];
     }
 
-    public function plan(): BelongsTo
-    {
+    public function plan(): BelongsTo {
         return $this->belongsTo(Plan::class);
     }
 
-    public function chats(): HasMany
-    {
+    public function chats(): HasMany {
         return $this->hasMany(Chat::class);
     }
 
-    public function messages(): HasMany
-    {
+    public function messages(): HasMany {
         return $this->hasMany(Message::class);
+    }
+
+    public function order(): HasMany {
+        return $this->hasMany(Order::class);
     }
 }
