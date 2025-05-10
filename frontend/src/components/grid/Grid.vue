@@ -33,7 +33,7 @@
 
             <template v-if="col.type === 'image'" #body="slotProps">
                 <div>
-                    <img class="h-30" :src="backendUrl + '/storage/files/' + slotProps.data.path + slotProps.data.name" />
+                    <img class="h-30" />
                 </div>
             </template>
         </Column>
