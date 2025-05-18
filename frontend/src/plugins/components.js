@@ -1,4 +1,5 @@
 import ActionButton from "@/components/action/ActionButton.vue";
+import ChatList from "@/components/chat/ChatList.vue";
 import FilterLayout from "@/components/filter/FilterLayout.vue";
 import FormButton from "@/components/form/FormButton.vue";
 import FormError from "@/components/form/FormError.vue";
@@ -7,7 +8,9 @@ import FormLayout from "@/components/form/FormLayout.vue";
 import FormSelect from "@/components/form/FormSelect.vue";
 import FormTextarea from "@/components/form/FormTextarea.vue";
 import Grid from "@/components/grid/Grid.vue"
+import OrderList from "@/components/order/OrderList.vue";
 import Pannel from "@/components/pannel/Pannel.vue";
+import PlanList from "@/components/plan/PlanList.vue";
 import UserEdit from "@/components/user/UserEdit.vue";
 import UserList from "@/components/user/UserList.vue";
 import UserLogin from "@/components/user/UserLogin.vue";
@@ -40,5 +43,14 @@ export default {
 
         // Action
         Vue.component('app-action-button', ActionButton);
+
+        // Order
+        Vue.component('app-order-list', OrderList);
+
+        // Chat
+        Vue.component('app-chat-list', ChatList);
+
+        // Plan
+        Vue.component('app-plan-list', PlanList);
     }
 }

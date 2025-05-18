@@ -20,6 +20,7 @@ return new class extends Migration
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
 
+            $table->boolean('is_active')->default(1);
             $table->string('key')->unique();
             $table->string('name');
             $table->string('description')->nullable();
@@ -41,7 +42,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
 
             $table->text('message');
-            $table->json('filenames')->nullable();
+            $table->json('images')->nullable();
             $table->timestamps();
         });
 
@@ -51,6 +52,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('image_filename')->nullable();
+            $table->string('image_path')->nullable(); 
             $table->timestamps();
         });
 

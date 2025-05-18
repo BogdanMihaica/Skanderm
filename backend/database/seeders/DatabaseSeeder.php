@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
                 'chat_id' => fake()->randomElement($chats)->id,
                 'user_id' => fake()->randomElement($users)->id,
                 'message' => fake()->paragraph(),
-                'filenames' => json_encode([])
+                'images' => json_encode([])
             ]);
         }
 

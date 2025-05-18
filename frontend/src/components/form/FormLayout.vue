@@ -1,6 +1,6 @@
 <template>
     <div class="max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-lg space-y-6">
-        <div class="text-center">
+        <div class="text-center text-2xl">
             <slot name="title"></slot>
         </div>
         <div class="space-y-4">

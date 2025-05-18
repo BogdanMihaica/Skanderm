@@ -17,6 +17,21 @@ class PlanController extends Controller
     {
         $plans = Plan::all();
 
-        return new JsonResource($plans);
+        return JsonResource::collection($plans);
+    }
+
+    public function show(Plan $plan) {
+        return New JsonResource($plan);
+    }
+
+    public function update(Request $request, Plan $plan) {
+        $validated = $request->validate([
+            'is_active' => 'required|boolean'
+        ]);
+
+        $plan->fill($validated);
+        $plan->save();
+        
+        return $this->show($plan);
     }
 }
